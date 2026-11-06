@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="420" viewBox="0 0 1280 420" role="img" aria-labelledby="title desc">
+  <title id="title">Plant Disease Classifier</title>
+  <desc id="desc">Independent research in agricultural computer vision by Daniel Pan. Three crops, fifteen source folders, two classes.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a1715"/>
+      <stop offset="1" stop-color="#132b25"/>
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="#93cfb4" opacity=".12"/>
+    </pattern>
+    <linearGradient id="leaf" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#4aa781" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#a0e6b7" stop-opacity=".55"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="420" rx="20" fill="url(#bg)"/>
+  <rect width="1280" height="420" rx="20" fill="url(#grid)"/>
+  <rect x="48" y="44" width="4" height="18" rx="2" fill="#a6e6bb"/>
+  <text x="66" y="59" fill="#acd6c0" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" letter-spacing="2.5">INDEPENDENT RESEARCH / 2024</text>
+  <text x="48" y="140" fill="#f3f8f4" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="700" letter-spacing="-2">Plant Disease</text>
+  <text x="48" y="207" fill="#f3f8f4" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="700" letter-spacing="-2">Classifier</text>
+  <text x="50" y="249" fill="#a8c3b8" font-family="Arial, Helvetica, sans-serif" font-size="20">Neural networks for agricultural image analysis.</text>
+  <g transform="translate(858 32)">
+    <circle cx="160" cy="136" r="112" fill="none" stroke="#608c75" stroke-opacity=".24"/>
+    <circle cx="160" cy="136" r="135" fill="none" stroke="#608c75" stroke-opacity=".12"/>
+    <path d="M83 225 C17 132 104 44 248 46 C256 184 170 242 83 225Z" fill="url(#leaf)" stroke="#98dcb4" stroke-width="2"/>
+    <path d="M66 246 L218 78 M107 201 L101 140 M137 168 L137 104 M168 134 L168 77 M108 200 L169 204 M138 168 L206 169 M170 133 L234 131" fill="none" stroke="#a1dfb8" stroke-opacity=".7" stroke-width="2" stroke-linecap="round"/>
+    <g fill="#c6f5cf">
+      <circle cx="107" cy="201" r="4"/><circle cx="137" cy="168" r="4"/><circle cx="168" cy="134" r="4"/>
+    </g>
+  </g>
+  <path d="M48 290 H1232" stroke="#365248"/>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="50" y="345" fill="#d2efdc" font-size="32" font-weight="700">03</text>
+    <text x="104" y="343" fill="#a8c3b8" font-size="14" letter-spacing="1.6">CROPS</text>
+    <text x="291" y="345" fill="#d2efdc" font-size="32" font-weight="700">15</text>
+    <text x="345" y="343" fill="#a8c3b8" font-size="14" letter-spacing="1.6">SOURCE FOLDERS</text>
+    <text x="641" y="345" fill="#d2efdc" font-size="32" font-weight="700">02</text>
+    <text x="695" y="343" fill="#a8c3b8" font-size="14" letter-spacing="1.6">CLASSES</text>
+    <text x="1230" y="343" text-anchor="end" fill="#acd6c0" font-size="16" font-weight="700">DANIEL PAN</text>
+    <text x="50" y="383" fill="#799b8b" font-size="14">PEPPER / POTATO / TOMATO</text>
+  </g>
+</svg>

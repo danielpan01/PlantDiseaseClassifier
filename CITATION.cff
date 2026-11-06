@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this research, please cite the associated preprint."
+type: software
+title: "Plant Disease Classifier"
+authors:
+  - family-names: "Pan"
+    given-names: "Daniel"
+repository-code: "https://github.com/danielpan01/PlantDiseaseClassifier"
+url: "https://github.com/danielpan01/PlantDiseaseClassifier"
+abstract: "Independent research code for binary plant disease classification using MLP experiments and an exploratory zero-shot CLIP baseline."
+keywords:
+  - machine learning
+  - computer vision
+  - plant disease classification
+  - independent research
+preferred-citation:
+  type: article
+  title: "Enhancing Agricultural Diagnostics: Neural Network-Based Plant Disease Identification"
+  authors:
+    - family-names: "Pan"
+      given-names: "Daniel"
+  journal: "Research Archive of Rising Scholars"
+  year: 2024
+  month: 10
+  doi: "10.58445/rars.1772"
+  url: "https://research-archive.org/index.php/rars/preprint/view/1772"
+  notes: "Preprint, version 1; posted October 17, 2024."
