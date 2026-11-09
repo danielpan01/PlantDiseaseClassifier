@@ -5,3 +5,4 @@ PlantVillage
 DataPlotting
 *.npz
 *.npy
+__pycache__/

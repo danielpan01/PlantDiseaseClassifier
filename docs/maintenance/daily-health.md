@@ -1,8 +1,8 @@
 # Plant Disease Classifier daily maintenance report
 
-Checked on **2026-11-08** (America/New_York).
+Checked on **2026-11-09** (America/New_York).
 
-Generated automatically by the daily project health workflow. This is a maintenance observation, not a new research result or application test run.
+Generated automatically by the daily project health workflow. This is a maintenance observation, not a new research result or full-dataset training run.
 
 **Summary:** 0 failed checks; 0 unverified external checks.
 
@@ -19,7 +19,9 @@ Generated automatically by the daily project health workflow. This is a maintena
 | README.md: docs/RESEARCH_NOTES.md#dataset-layout | PASS | Local target exists; fragment not checked |
 | README.md: docs/RESEARCH_NOTES.md#evaluation-scope | PASS | Local target exists; fragment not checked |
 | README.md: docs/assets/research-banner.svg | PASS | Local target exists; fragment not checked |
+| README.md: docs/maintenance/AUTOMATION.md | PASS | Local target exists; fragment not checked |
 | README.md: plantDisease.py | PASS | Local target exists; fragment not checked |
+| README.md: requirements-dev.txt | PASS | Local target exists; fragment not checked |
 | README.md: requirements.txt | PASS | Local target exists; fragment not checked |
 | docs/RESEARCH_NOTES.md: ../.gitignore | PASS | Local target exists; fragment not checked |
 | docs/RESEARCH_NOTES.md: ../README.md | PASS | Local target exists; fragment not checked |
@@ -28,24 +30,26 @@ Generated automatically by the daily project health workflow. This is a maintena
 | SVG: docs/assets/research-banner.svg | PASS | SVG root and XML structure checked |
 | https://doi.org/10.58445/rars.1772 | PASS | HTTP 200; reachability only |
 | https://www.kaggle.com/datasets/emmarex/plantdisease | PASS | HTTP 200; reachability only |
+| Dependency vulnerability audit | PASS | 71 installed packages audited; no known vulnerabilities reported by PyPI (official PyTorch CPU builds matched to upstream versions) |
 
 ## Dependency release watch
 
-Live PyPI metadata compared alongside the declared constraints. The reported latest release may be outside those constraints. This does not resolve installed versions, test compatibility, audit vulnerabilities, or upgrade packages.
+Live PyPI metadata compared alongside the declared constraints. The reported latest release may be outside those constraints. This does not resolve installed versions, test compatibility, or upgrade packages. The separate dependency vulnerability audit above checks the installed environment.
 
 | Package | Repository constraint | PyPI latest | Latest release requires Python |
 | --- | --- | --- | --- |
-| numpy | ~=2.0.1 | 2.5.4 | >=3.12 |
-| matplotlib | ~=3.9.1 | 3.11.2 | >=3.11 |
-| torch | ~=2.4.0 | 2.15.0 | >=3.11 |
-| scikit-learn | ~=1.5.1 | 1.9.1 | >=3.11 |
-| pillow | ~=10.4.0 | 13.0.0 | >=3.11 |
-| tqdm | ~=4.66.5 | 4.70.1 | >=3.8 |
-| transformers | ~=4.44.2 | 5.22.2 | >=3.11.0 |
+| numpy | ==2.4.6 | 2.5.4 | >=3.12 |
+| matplotlib | ==3.11.2 | 3.11.2 | >=3.11 |
+| torch | ==2.15.0 | 2.15.0 | >=3.11 |
+| torchvision | ==0.29.2 | 0.29.2 | !=3.14.1,>=3.10 |
+| scikit-learn | ==1.9.1 | 1.9.1 | >=3.11 |
+| pillow | ==13.0.0 | 13.0.0 | >=3.11 |
+| tqdm | ==4.70.1 | 4.70.1 | >=3.8 |
+| transformers | ==5.22.2 | 5.22.2 | >=3.11.0 |
 
 ## Scope and history
 
-Checks repository documentation, Python syntax, the SVG banner, publication/dataset link reachability, and current PyPI release metadata. Does not download the dataset, train a model, execute application code, or reproduce the historical accuracy claim.
+Checks repository documentation, Python syntax, the SVG banner, publication/dataset link reachability, current PyPI release metadata, and known vulnerabilities in all installed dependencies using pip-audit. The workflow also runs synthetic image/MLP and offline CLIP integration tests. It does not download PlantVillage, perform full-dataset training, or reproduce the historical accuracy claim.
 
 Local link checks cover inline Markdown and HTML file targets; heading fragments and reference-style links are not validated. External checks verify HTTP responses only, not page content. WARN means unverified, not a confirmed broken link.
 

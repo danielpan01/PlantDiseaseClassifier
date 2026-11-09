@@ -1,7 +1,8 @@
-numpy~=2.0.1
-matplotlib~=3.9.1
-torch~=2.4.0
-scikit-learn~=1.5.1
-pillow~=10.4.0
-tqdm~=4.66.5
-transformers~=4.44.2
+numpy==2.4.6
+matplotlib==3.11.2
+torch==2.15.0
+torchvision==0.29.2
+scikit-learn==1.9.1
+pillow==13.0.0
+tqdm==4.70.1
+transformers==5.22.2
