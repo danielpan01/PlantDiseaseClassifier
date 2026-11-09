@@ -6,7 +6,7 @@ This workflow tests application compatibility, audits installed dependencies, ch
 
 ## Checks
 
-Checks repository documentation, Python syntax, the SVG banner, publication/dataset link reachability, current PyPI release metadata, and known vulnerabilities reported by PyPI through `pip-audit --strict`. The audit covers the installed environment, including transitive dependencies and the scanner's dependencies. No advisories are suppressed. The workflow also tests JPEG loading/caching, normalization, real MLP training/evaluation/plotting, the main sweep flow on synthetic data, and offline CLIP inference with locally generated weights. It does not download PlantVillage, perform full-dataset training, or reproduce the historical accuracy claim.
+Checks repository documentation, Python syntax, the SVG banner, publication/dataset link reachability, current PyPI release metadata, and known vulnerabilities reported by PyPI through `pip-audit --strict`. The audit covers the installed environment, including transitive dependencies and the scanner's dependencies. The helper inventories every installed package, then passes the complete exact-version inventory to `pip-audit --strict --no-deps --disable-pip`. Only the official `+cpu` suffix on torch/torchvision is normalized to its upstream release for PyPI advisory lookup; unknown private builds still fail verification. No advisories are suppressed. The workflow also tests JPEG loading/caching, normalization, real MLP training/evaluation/plotting, the main sweep flow on synthetic data, and offline CLIP inference with locally generated weights. It does not download PlantVillage, perform full-dataset training, or reproduce the historical accuracy claim.
 
 Configure the input files and external URLs in `.github/daily-health.json`. The workflow installs `requirements.txt` and `requirements-dev.txt` on Ubuntu, using PyTorch's official CPU wheel index for CI, then runs `pip check` and the integration tests. Daily checks use Python 3.11; pull requests and pushes to `main` validate Python 3.11 and 3.12. CLIP tests run offline and require no account, dataset, or pretrained-model download.
 
@@ -34,7 +34,7 @@ To pause: Actions → Daily project health → menu → Disable workflow. To rem
 python -m pip install -r requirements.txt -r requirements-dev.txt
 python -m pip check
 python -m unittest discover -s scripts -p 'test_*.py' -v
-python -m pip_audit --strict
+python scripts/audit_dependencies.py
 python scripts/daily_health.py
 ```
 

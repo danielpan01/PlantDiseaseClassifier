@@ -2,10 +2,12 @@
 
 import ast
 import hashlib
+from importlib.metadata import distributions
 import json
 import re
 import subprocess
 import sys
+import tempfile
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -50,13 +52,28 @@ def markdown_targets(text):
     return sorted(set(targets))
 
 
+def audit_requirement(name, version):
+    """Official PyTorch CPU wheels share the public release's advisory ranges."""
+    if name.lower().replace('_', '-') in {'torch', 'torchvision'} and version.endswith('+cpu'):
+        version = version.removesuffix('+cpu')
+    return f'{name}=={version}'
+
+
 def audit_environment():
     """Audit every installed dependency, including transitives and maintenance tools."""
-    return subprocess.run(
-        [sys.executable, '-m', 'pip_audit', '--strict', '--format', 'json',
-         '--desc', 'off', '--progress-spinner', 'off'],
-        capture_output=True, text=True, timeout=300, check=False,
-    )
+    inventory = sorted(audit_requirement(dist.metadata['Name'], dist.version)
+                       for dist in distributions())
+    with tempfile.TemporaryDirectory() as directory:
+        requirements = Path(directory) / 'installed.txt'
+        requirements.write_text('\n'.join(inventory) + '\n', encoding='utf-8')
+        # The inventory already includes every transitive package installed in this environment.
+        # Audit those exact versions without resolving a different dependency tree.
+        return subprocess.run(
+            [sys.executable, '-m', 'pip_audit', '--strict', '--format', 'json',
+             '--desc', 'off', '--progress-spinner', 'off', '--no-deps', '--disable-pip',
+             '--requirement', str(requirements)],
+            capture_output=True, text=True, timeout=300, check=False,
+        )
 
 
 def audit_rows(auditor):
@@ -87,7 +104,7 @@ def audit_rows(auditor):
             return [('Dependency vulnerability audit', 'FAIL',
                      f'{len(rows)} findings or unverified packages; see details below'), *rows]
         return [('Dependency vulnerability audit', 'PASS',
-                 f'{len(dependencies)} installed packages audited; no known vulnerabilities reported by PyPI')]
+                 f'{len(dependencies)} installed packages audited; no known vulnerabilities reported by PyPI (official PyTorch CPU builds matched to upstream versions)')]
     except (OSError, subprocess.TimeoutExpired, ValueError, KeyError, TypeError) as error:
         return [('Dependency vulnerability audit', 'FAIL',
                  f'Unverified: {type(error).__name__}; scanner failed, timed out, or returned invalid data. Run python -m pip_audit --strict for diagnostics.')]

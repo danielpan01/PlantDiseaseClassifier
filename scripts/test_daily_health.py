@@ -5,7 +5,7 @@ import unittest
 import urllib.error
 from pathlib import Path
 
-from daily_health import audit_rows, collect, local_path, markdown_targets
+from daily_health import audit_requirement, audit_rows, collect, local_path, markdown_targets
 
 
 class DailyHealthTests(unittest.TestCase):
@@ -113,6 +113,14 @@ class DailyHealthTests(unittest.TestCase):
         def timeout():
             raise subprocess.TimeoutExpired('pip_audit', 300)
         self.assertEqual(audit_rows(timeout)[0][1], 'FAIL')
+
+    def test_cpu_builds_are_audited_at_the_actual_upstream_version(self):
+        self.assertEqual(audit_requirement('torch', '2.4.0+cpu'), 'torch==2.4.0')
+        self.assertEqual(audit_requirement('torchvision', '0.29.2+cpu'), 'torchvision==0.29.2')
+        self.assertEqual(audit_requirement('pillow', '13.0.0'), 'pillow==13.0.0')
+        # Unknown private builds must remain unverified, not silently become public versions.
+        self.assertEqual(audit_requirement('torch', '2.15.0+custom'), 'torch==2.15.0+custom')
+        self.assertEqual(audit_requirement('other', '1.0+cpu'), 'other==1.0+cpu')
 
 
 if __name__ == "__main__":

@@ -73,7 +73,7 @@ The first CLIP run downloads pretrained model weights. Its evaluation uses a dif
 python -m pip install -r requirements-dev.txt
 python -m pip check
 python -m unittest discover -s scripts -p 'test_*.py' -v
-python -m pip_audit --strict
+python scripts/audit_dependencies.py
 ```
 
 Tests exercise JPEG loading and caching, preprocessing, MLP fitting/evaluation/plots, the main sweep flow on a small synthetic matrix, and real CLIP inference with a tiny locally generated model. They do not download PlantVillage or reproduce the published accuracy. Both model paths accept the documented JPEG format only, including when a different image format is disguised with a `.JPG` extension.

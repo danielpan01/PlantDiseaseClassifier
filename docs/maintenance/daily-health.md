@@ -30,7 +30,7 @@ Generated automatically by the daily project health workflow. This is a maintena
 | SVG: docs/assets/research-banner.svg | PASS | SVG root and XML structure checked |
 | https://doi.org/10.58445/rars.1772 | PASS | HTTP 200; reachability only |
 | https://www.kaggle.com/datasets/emmarex/plantdisease | PASS | HTTP 200; reachability only |
-| Dependency vulnerability audit | PASS | 71 installed packages audited; no known vulnerabilities reported by PyPI |
+| Dependency vulnerability audit | PASS | 71 installed packages audited; no known vulnerabilities reported by PyPI (official PyTorch CPU builds matched to upstream versions) |
 
 ## Dependency release watch
 
