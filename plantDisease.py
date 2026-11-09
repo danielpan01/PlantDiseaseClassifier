@@ -54,8 +54,8 @@ def load_data(return_array=True):
             image_size = (128, 128)
             processed_inputs = []
             for img_path in tqdm(inputs, desc='Extracting pixels from images'):
-                img = Image.open(img_path).convert('RGB').resize(image_size)
-                img = np.array(img).flatten()
+                with Image.open(img_path, formats=['JPEG']) as source:
+                    img = np.array(source.convert('RGB').resize(image_size)).flatten()
                 processed_inputs.append(img)
             inputs = np.array(processed_inputs)
             targets = np.array(targets)
@@ -154,15 +154,22 @@ def plot_all(models, inputs_train, targets_train, inputs_test, targets_test, arg
             plt.savefig(plot_path)
             plt.close()
 
-def deep_model_classify(img_paths, targets, batch_size=30):
-    dev = torch.device('cuda') if torch.cuda.is_available() else (torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu'))
-    model = pipeline("zero-shot-image-classification", model="openai/clip-vit-base-patch16", device=dev)
+def deep_model_classify(img_paths, targets, batch_size=30,
+                        model_name="openai/clip-vit-base-patch16", device=None):
+    if batch_size < 1:
+        raise ValueError('batch_size must be positive')
+    dev = device if device is not None else (torch.device('cuda') if torch.cuda.is_available() else (torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu')))
+    model = pipeline("zero-shot-image-classification", model=model_name, device=dev)
     predictions = []
     num_batches = len(img_paths) // batch_size + (1 if len(img_paths) % batch_size != 0 else 0)
 
     for i in tqdm(range(num_batches), desc="Classifying images"):
-        batch_paths = [str(path) for path in img_paths[i * batch_size:(i + 1) * batch_size]]
-        batch_results = model(batch_paths, candidate_labels=['healthy tomato plant', 'unhealthy tomato plant'])
+        # Decode only the dataset's documented JPEG format, including on the CLIP path.
+        images = []
+        for path in img_paths[i * batch_size:(i + 1) * batch_size]:
+            with Image.open(path, formats=['JPEG']) as source:
+                images.append(source.convert('RGB'))
+        batch_results = model(images, candidate_labels=['healthy tomato plant', 'unhealthy tomato plant'])
 
         for result in batch_results:
             label = result[0]['label']

@@ -1,9 +1,11 @@
 import tempfile
+import json
+import subprocess
 import unittest
 import urllib.error
 from pathlib import Path
 
-from daily_health import collect, local_path, markdown_targets
+from daily_health import audit_rows, collect, local_path, markdown_targets
 
 
 class DailyHealthTests(unittest.TestCase):
@@ -73,6 +75,44 @@ class DailyHealthTests(unittest.TestCase):
         report, failed = collect(self.root, self.config, "2026-11-08")
         self.assertTrue(failed)
         self.assertIn("Unsupported requirement", report)
+
+    def test_clean_audit_is_reported(self):
+        result = subprocess.CompletedProcess([], 0, json.dumps({
+            'dependencies': [{'name': 'pillow', 'version': '13.0.0', 'vulns': []}]
+        }))
+        self.config['vulnerability_audit'] = True
+        report, failed = collect(self.root, self.config, '2026-11-09', auditor=lambda: result)
+        self.assertFalse(failed)
+        self.assertIn('1 installed packages audited', report)
+
+    def test_vulnerability_fails_report_with_fix(self):
+        result = subprocess.CompletedProcess([], 1, json.dumps({
+            'dependencies': [{'name': 'pillow', 'version': '10.4.0', 'vulns': [
+                {'id': 'TEST-ADVISORY', 'fix_versions': ['13.0.0']}
+            ]}]
+        }))
+        self.config['vulnerability_audit'] = True
+        report, failed = collect(self.root, self.config, '2026-11-09', auditor=lambda: result)
+        self.assertTrue(failed)
+        self.assertIn('TEST-ADVISORY; fixed versions: 13.0.0', report)
+
+    def test_incomplete_or_broken_audit_never_passes(self):
+        cases = [
+            (1, ''), (0, 'not json'), (0, '{}'), (0, '{"dependencies": []}'),
+            (0, '{"dependencies": [{"name": "private", "skip_reason": "Unavailable"}]}'),
+            (1, '{"dependencies": [{"name": "pillow", "version": "13.0.0", "vulns": []}]}'),
+            (0, '{"dependencies": [{"name": "pillow", "version": "13.0.0", "vulns": null}]}'),
+        ]
+        for code, output in cases:
+            with self.subTest(code=code, output=output):
+                result = subprocess.CompletedProcess([], code, output)
+                rows = audit_rows(lambda: result)
+                self.assertTrue(all(row[1] == 'FAIL' for row in rows))
+
+    def test_audit_timeout_is_a_failure(self):
+        def timeout():
+            raise subprocess.TimeoutExpired('pip_audit', 300)
+        self.assertEqual(audit_rows(timeout)[0][1], 'FAIL')
 
 
 if __name__ == "__main__":

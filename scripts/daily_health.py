@@ -4,6 +4,7 @@ import ast
 import hashlib
 import json
 import re
+import subprocess
 import sys
 import urllib.error
 import urllib.parse
@@ -49,7 +50,50 @@ def markdown_targets(text):
     return sorted(set(targets))
 
 
-def collect(root, config, day, fetcher=fetch):
+def audit_environment():
+    """Audit every installed dependency, including transitives and maintenance tools."""
+    return subprocess.run(
+        [sys.executable, '-m', 'pip_audit', '--strict', '--format', 'json',
+         '--desc', 'off', '--progress-spinner', 'off'],
+        capture_output=True, text=True, timeout=300, check=False,
+    )
+
+
+def audit_rows(auditor):
+    """Never turn an incomplete audit or scanner failure into a green report."""
+    try:
+        result = auditor()
+        data = json.loads(result.stdout)
+        dependencies = data['dependencies']
+        if not isinstance(dependencies, list) or not dependencies:
+            raise ValueError('Empty or invalid dependency inventory')
+        rows = []
+        for dependency in dependencies:
+            name = dependency['name']
+            if dependency.get('skip_reason'):
+                rows.append((f'Audit: {name}', 'FAIL', f"Unverified: {dependency['skip_reason']}"))
+                continue
+            version = dependency['version']
+            vulnerabilities = dependency['vulns']
+            if not isinstance(vulnerabilities, list):
+                raise ValueError('Invalid vulnerability inventory')
+            for vulnerability in vulnerabilities:
+                fixes = ', '.join(vulnerability['fix_versions']) or 'No published fix'
+                rows.append((f'Audit: {name}=={version}', 'FAIL',
+                             f"{vulnerability['id']}; fixed versions: {fixes}"))
+        if result.returncode != 0 and not rows:
+            raise ValueError(f'Scanner exited {result.returncode} without a complete result')
+        if rows:
+            return [('Dependency vulnerability audit', 'FAIL',
+                     f'{len(rows)} findings or unverified packages; see details below'), *rows]
+        return [('Dependency vulnerability audit', 'PASS',
+                 f'{len(dependencies)} installed packages audited; no known vulnerabilities reported by PyPI')]
+    except (OSError, subprocess.TimeoutExpired, ValueError, KeyError, TypeError) as error:
+        return [('Dependency vulnerability audit', 'FAIL',
+                 f'Unverified: {type(error).__name__}; scanner failed, timed out, or returned invalid data. Run python -m pip_audit --strict for diagnostics.')]
+
+
+def collect(root, config, day, fetcher=fetch, auditor=audit_environment):
     rows = []
 
     def add(check, status, detail):
@@ -127,6 +171,9 @@ def collect(root, config, day, fetcher=fetch):
             )
             add(url, "WARN", f"Unverified: {detail}; may be transient or automated-access blocking")
 
+    if config.get('vulnerability_audit'):
+        rows.extend(audit_rows(auditor))
+
     dependencies = []
     requirements = config.get("requirements")
     if requirements:
@@ -175,7 +222,7 @@ def collect(root, config, day, fetcher=fetch):
         "",
         (
             "Generated automatically by the daily project health workflow. This is a "
-            "maintenance observation, not a new research result or application test run."
+            "maintenance observation, not a new research result or full-dataset training run."
         ),
         "",
         f"**Summary:** {failures} failed checks; {warnings} unverified external checks.",
@@ -192,8 +239,8 @@ def collect(root, config, day, fetcher=fetch):
             (
                 "Live PyPI metadata compared alongside the declared constraints. The "
                 "reported latest release may be outside those constraints. This does not "
-                "resolve installed versions, test compatibility, audit vulnerabilities, "
-                "or upgrade packages."
+                "resolve installed versions, test compatibility, or upgrade packages. "
+                "The separate dependency vulnerability audit above checks the installed environment."
             ),
             "",
             "| Package | Repository constraint | PyPI latest | Latest release requires Python |",

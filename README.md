@@ -33,7 +33,7 @@ The accuracy above is a historical result reported in the preprint; it has not b
 
 ### 1. Set up the environment
 
-Use Python 3.11 with the dependency versions specified in [requirements.txt](requirements.txt).
+Use Python 3.11 or 3.12 with the tested dependency versions pinned in [requirements.txt](requirements.txt). These are security-maintained versions; they are not the original 2024 experiment environment.
 
 ```bash
 git clone https://github.com/danielpan01/PlantDiseaseClassifier.git
@@ -67,12 +67,26 @@ python -c "from plantDisease import deep_model; deep_model()"
 
 The first CLIP run downloads pretrained model weights. Its evaluation uses a different protocol from the MLP; consult the methods notes before interpreting the two scores together.
 
+### 4. Check compatibility and known vulnerabilities
+
+```bash
+python -m pip install -r requirements-dev.txt
+python -m pip check
+python -m unittest discover -s scripts -p 'test_*.py' -v
+python -m pip_audit --strict
+```
+
+Tests exercise JPEG loading and caching, preprocessing, MLP fitting/evaluation/plots, the main sweep flow on a small synthetic matrix, and real CLIP inference with a tiny locally generated model. They do not download PlantVillage or reproduce the published accuracy. Both model paths accept the documented JPEG format only, including when a different image format is disguised with a `.JPG` extension.
+
+The [maintenance workflow](docs/maintenance/AUTOMATION.md) runs these tests and audits all installed packages, including transitive dependencies. Vulnerabilities and incomplete audits fail the workflow. Dependabot checks for dependency and GitHub Actions updates weekly.
+
 ## Repository guide
 
 | File | Purpose |
 | :--- | :--- |
 | [plantDisease.py](plantDisease.py) | Data loading, preprocessing, training, evaluation, and plotting |
-| [requirements.txt](requirements.txt) | Dependency version ranges for the original experiments |
+| [requirements.txt](requirements.txt) | Tested direct dependency pins for the maintained environment |
+| [requirements-dev.txt](requirements-dev.txt) | Pinned vulnerability scanner |
 | [docs/RESEARCH_NOTES.md](docs/RESEARCH_NOTES.md) | Experiment details, dataset layout, and evaluation limitations |
 | [CITATION.cff](CITATION.cff) | Citation metadata and the associated preprint |
 

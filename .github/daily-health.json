@@ -19,9 +19,10 @@
     "docs/assets/research-banner.svg"
   ],
   "requirements": "requirements.txt",
+  "vulnerability_audit": true,
   "urls": [
     "https://doi.org/10.58445/rars.1772",
     "https://www.kaggle.com/datasets/emmarex/plantdisease"
   ],
-  "scope": "Checks repository documentation, Python syntax, the SVG banner, publication/dataset link reachability, and current PyPI release metadata. Does not download the dataset, train a model, execute application code, or reproduce the historical accuracy claim."
+  "scope": "Checks repository documentation, Python syntax, the SVG banner, publication/dataset link reachability, current PyPI release metadata, and known vulnerabilities in all installed dependencies using pip-audit. The workflow also runs synthetic image/MLP and offline CLIP integration tests. It does not download PlantVillage, perform full-dataset training, or reproduce the historical accuracy claim."
 }
