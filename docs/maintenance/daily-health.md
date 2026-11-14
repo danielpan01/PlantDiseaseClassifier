@@ -1,6 +1,6 @@
 # Plant Disease Classifier daily maintenance report
 
-Checked on **2026-11-12** (America/New_York).
+Checked on **2026-11-13** (America/New_York).
 
 Generated automatically by the daily project health workflow. This is a maintenance observation, not a new research result or full-dataset training run.
 
@@ -45,7 +45,7 @@ Live PyPI metadata compared alongside the declared constraints. The reported lat
 | scikit-learn | ==1.9.1 | 1.9.1 | >=3.11 |
 | pillow | ==13.0.0 | 13.0.0 | >=3.11 |
 | tqdm | ==4.70.1 | 4.70.1 | >=3.8 |
-| transformers | ==5.22.2 | 5.22.2 | >=3.11.0 |
+| transformers | ==5.22.2 | 5.23.0 | >=3.11.0 |
 
 ## Scope and history
 
