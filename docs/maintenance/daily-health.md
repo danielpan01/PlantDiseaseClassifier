@@ -1,6 +1,6 @@
 # Plant Disease Classifier daily maintenance report
 
-Checked on **2026-11-14** (America/New_York).
+Checked on **2026-11-15** (America/New_York).
 
 Generated automatically by the daily project health workflow. This is a maintenance observation, not a new research result or full-dataset training run.
 
@@ -38,7 +38,7 @@ Live PyPI metadata compared alongside the declared constraints. The reported lat
 
 | Package | Repository constraint | PyPI latest | Latest release requires Python |
 | --- | --- | --- | --- |
-| numpy | ==2.4.6 | 2.5.4 | >=3.12 |
+| numpy | ==2.4.6 | 2.5.5 | >=3.12 |
 | matplotlib | ==3.11.2 | 3.11.2 | >=3.11 |
 | torch | ==2.15.0 | 2.15.0 | >=3.11 |
 | torchvision | ==0.29.2 | 0.29.2 | !=3.14.1,>=3.10 |
